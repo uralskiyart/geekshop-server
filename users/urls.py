@@ -2,12 +2,13 @@ from django.urls import path
 
 from products.views import products
 
-from users.views import login, register, logout
+from users.views import login, register, logout, profile
 
 app_name = 'users'
 
 urlpatterns = [
     path('login/', login, name='login'),
     path('register/', register, name='register'),
-    path('logout/', logout, name='register'),
+    path('profile/', profile, name='profile'),
+    path('logout/', logout, name='logout'),
 ]
