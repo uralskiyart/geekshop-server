@@ -4,8 +4,11 @@ window.onload = function() {
         console.log(t_href.name);
         console.log(t_href.value);
         $.ajax({
-            url: 'baskets/edit' + t_href.name + '/' + t_href.value + '/',
-            succes: function() { }
+            url: '/baskets/edit' + t_href.name + '/' + t_href.value + '/',
+            succes: function(data) {
+                $('.basket_list').html(data.result);
+            }
         });
+        event.proventDefault();
     });
 }
