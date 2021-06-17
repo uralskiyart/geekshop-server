@@ -24,3 +24,7 @@ def basket_add(request, product_id):
 def basket_remove(request, id):
     Basket.objects.get(id=id).delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def basket_edit(request, id, quantity):
+     pass
