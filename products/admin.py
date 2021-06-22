@@ -3,13 +3,17 @@ from django.contrib import admin
 from products.models import ProductCategory, Product
 
 
-# admin.site.register(ProductCategory)
-# @admin.register(ProductCategory)
-# class ProductAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'description',)
-#     fields = ('name', 'description',)
-#     ordering = ('name',)
-#     search_fields = ('name',)
+
+@admin.register(ProductCategory)
+class ProductCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description','quantity_in_category')
+    fields = ('name', 'description','quantity_in_category')
+    ordering = ('name',)
+    search_fields = ('name',)
+
+
+    def quantity_in_category(self, obj):
+        return sum(product.quantity for product in Product.objects.filter(category=obj.name))
 
 
 
