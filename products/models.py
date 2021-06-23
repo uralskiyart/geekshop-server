@@ -16,8 +16,6 @@ class ProductCategory(models.Model):
         return sum(product.quantity for product in self.products_in_category)
 
 
-
-
 class Product(models.Model):
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     name = models.CharField(verbose_name='имя продукта', max_length=256)

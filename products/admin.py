@@ -6,15 +6,20 @@ from products.models import ProductCategory, Product
 
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description','quantity_in_category')
-    fields = ('name', 'description','quantity_in_category')
+    list_display = ('name', 'description',)
+    fields = ('name', 'description',)
     ordering = ('name',)
     search_fields = ('name',)
 
 
-    def quantity_in_category(self, obj):
-        return sum(product.quantity for product in Product.objects.filter(category=obj.name))
+    def get_queryset(self, request):
+        print(ProductCategory.products_in_category_sum)
+        print(super(ProductCategoryAdmin, self).get_queryset(request).count())
+        return super(ProductCategoryAdmin, self).get_queryset(request)
 
+    def quantity_of_products_in_category(self, obj):
+        return obj.quantity_of_products_in_category
+    quantity_of_products_in_category.short_description = f'Количество товаров в категории '
 
 
 @admin.register(Product)
