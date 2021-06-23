@@ -8,12 +8,6 @@ class ProductCategory(models.Model):
     def __str__(self):
         return f'{self.name}'
 
-    # @property
-    # def products_in_category(self):
-    #     return Product.objects.filter(category=self.name)
-    #
-    # def products_in_category_sum(self):
-    #     return sum(product.quantity for product in self.products_in_category)
 
 
 class Product(models.Model):
