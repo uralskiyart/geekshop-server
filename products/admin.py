@@ -12,15 +12,6 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     ordering = ('name',)
     search_fields = ('name',)
 
-    @staticmethod
-    def category_id(cat_name):
-        return ProductCategory.objects.filter(name=cat_name)
-
-
-    @staticmethod
-    def sum_prod_in_cat(self):
-        pass
-
 
     def quantity_of_products_in_category(self, instance):
         print(Product.objects.filter(category=instance.id))
