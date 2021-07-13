@@ -1,10 +1,10 @@
 from django import forms
 
-from users.forms import UserRegisterForm, UserProfileForm
+from users.forms import UserRegistrationForm, UserProfileForm
 from users.models import User
 
 
-class UserAdminRegisterForm(UserRegisterForm):
+class UserAdminRegisterForm(UserRegistrationForm):
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}), required=False)
 
     class Meta:
