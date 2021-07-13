@@ -3,6 +3,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 
+from common.views import CommonContextMixin
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from baskets.models import Basket
 
