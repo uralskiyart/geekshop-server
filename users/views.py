@@ -1,22 +1,27 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LoginView, LogoutView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.contrib import messages
+from django.core.mail import send_mail
 
 from common.views import CommonContextMixin
+from geekshop import settings
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from baskets.models import Basket
 
 from users.models import User
 
 
-class CommonContextMixin:
-    title = None
+class UserVerifyMail:
+    def verify(self, email, activation_key):
+        pass
 
-    def get_context_data(self, **kwargs):
-        context = super(CommonContextMixin, self).get_context_data(**kwargs)
-        context['title'] = self.title
-        return context
+    def send_verify_mail(self, user):
+        subject = 'Verify your account'
+        link = reverse('users:verify', args=[user.email, user.activation_key])
+        message = f'{settings.DOMAIN}{link}'
+        return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
 
 
 # def login(request):
@@ -54,13 +59,34 @@ class UserLoginView(LoginView):
 #     return render(request, 'users/register.html', context)
 
 
-class UserRegistrationView(CommonContextMixin, SuccessMessageMixin, CreateView):
+class UserRegistrationView(CommonContextMixin, SuccessMessageMixin, CreateView, UserVerifyMail):
     model = User
     form_class = UserRegistrationForm
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
     success_message = 'Registration succes!'
     title = 'GeekShop - Registration'
+
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        form = self.get_form()
+        print(form, '!')
+        if form.is_valid():
+            user = form.save()
+            print(user)
+            print(form)
+            if self.send_verify_mail(user):
+                print('succes sanding')
+            else:
+                print('sending failed')
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
 
 # @login_required
 # def profile(request):
