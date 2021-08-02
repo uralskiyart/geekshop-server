@@ -1,6 +1,5 @@
-from django.contrib.auth.context_processors import auth
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponseRedirect, request
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LoginView, LogoutView
