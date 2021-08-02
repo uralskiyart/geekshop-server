@@ -1,0 +1,19 @@
+{% extends 'users/base.html' %}
+
+ <div >
+    {%  block content %}
+
+        <div class="card shadow-lg border-0 rounded-lg mt-5">
+            {% if user.is_authenticated %}
+            <h1>Поздравляем!</h1>
+            <div>Пользователь {{ user.mail }} успешно активирован</div>
+        {% else %}
+            <h3>Не поздравляем!</h3>
+            <div>Активация не прошла</div>
+        {% endif %}
+        </div>
+         <div class="card-footer text-center">
+                <div class="small"><a href="{% url 'index' %}">Главная страница</a></div>
+         </div>
+    {% endblock %}
+</div>

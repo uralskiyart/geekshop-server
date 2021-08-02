@@ -1,28 +1,69 @@
+from django.contrib.auth.context_processors import auth
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponseRedirect, request
+from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy, reverse
-from django.contrib import messages
-from django.core.mail import send_mail
+from django.contrib.auth import login as auth_login
 
-from common.views import CommonContextMixin
-from geekshop import settings
+from common.views import CommonContextMixin, CommonSendVerifyMailMixin
+
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from baskets.models import Basket
 
 from users.models import User
 
 
-class UserVerifyMail:
-    def verify(self, email, activation_key):
-        pass
+class UserLoginView(LoginView):
+    template_name = 'users/login.html'
+    form_class = UserLoginForm
+    title = 'GeekShop - Login'
 
-    def send_verify_mail(self, user):
-        subject = 'Verify your account'
-        link = reverse('users:verify', args=[user.email, user.activation_key])
-        message = f'{settings.DOMAIN}{link}'
-        return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
 
+class UserRegistrationView(CommonContextMixin, CommonSendVerifyMailMixin, SuccessMessageMixin, CreateView):
+    model = User
+    form_class = UserRegistrationForm
+    template_name = 'users/register.html'
+    success_url = reverse_lazy('users:login')
+    success_message = 'Registration succes!'
+    title = 'GeekShop - Registration'
+
+
+class UserVerifyView(LoginView):
+    model = User
+    template_name = 'users/verify.html'
+    title = 'GeekShop - Verify'
+
+    @staticmethod
+    def verify(request, email, activation_key):
+        user = User.objects.filter(email=email).first()
+        if user:
+            if user.activation_key == activation_key and not user.is_activation_key_expired():
+                user.is_active = True
+                user.save()
+                auth_login(request, user)
+            return render(request, 'users/verify.html')
+        return HttpResponseRedirect(reverse('users:login'))
+
+
+class UserProfileView(CommonContextMixin, UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = 'users/profile.html'
+    title = 'GeekShop - Profile'
+
+    def get_success_url(self):
+        return reverse_lazy('users:profile', args=(self.object.id,))
+
+    def get_context_data(self, **kwargs):
+        context = super(UserProfileView, self).get_context_data(**kwargs)
+        context['baskets'] = Basket.objects.filter(user=self.object)
+        return context
+
+
+class UserLogoutView(LogoutView):
+    pass
 
 # def login(request):
 #     if request.method == 'POST':
@@ -40,12 +81,6 @@ class UserVerifyMail:
 #     return render(request, 'users/login.html', context)
 
 
-class UserLoginView(LoginView):
-    template_name = 'users/login.html'
-    form_class = UserLoginForm
-    title = 'GeekShop - Login'
-
-
 # def register(request):
 #     if request.method == 'POST':
 #         form = UserRegisterForm(data=request.POST)
@@ -57,35 +92,6 @@ class UserLoginView(LoginView):
 #         form = UserRegisterForm()
 #     context = {'tittle': 'Geekshop - Register', 'form' : form}
 #     return render(request, 'users/register.html', context)
-
-
-class UserRegistrationView(CommonContextMixin, SuccessMessageMixin, CreateView, UserVerifyMail):
-    model = User
-    form_class = UserRegistrationForm
-    template_name = 'users/register.html'
-    success_url = reverse_lazy('users:login')
-    success_message = 'Registration succes!'
-    title = 'GeekShop - Registration'
-
-
-    def post(self, request, *args, **kwargs):
-        """
-        Handle POST requests: instantiate a form instance with the passed
-        POST variables and then check if it's valid.
-        """
-        form = self.get_form()
-        print(form, '!')
-        if form.is_valid():
-            user = form.save()
-            print(user)
-            print(form)
-            if self.send_verify_mail(user):
-                print('succes sanding')
-            else:
-                print('sending failed')
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
 
 
 # @login_required
@@ -109,26 +115,6 @@ class UserRegistrationView(CommonContextMixin, SuccessMessageMixin, CreateView, 
 #     return render(request, 'users/profile.html', context)
 
 
-class UserProfileView(CommonContextMixin, UpdateView):
-    model = User
-    form_class = UserProfileForm
-    template_name = 'users/profile.html'
-    title = 'GeekShop - Profule'
-
-    def get_success_url(self):
-        return reverse_lazy('users:profile', args=(self.object.id,))
-
-    def get_context_data(self, **kwargs):
-        context = super(UserProfileView, self).get_context_data(**kwargs)
-        context['baskets'] = Basket.objects.filter(user=self.object)
-        return context
-
 # def logout(request):
 #     auth.logout(request)
 #     return HttpResponseRedirect(reverse('index'))
-
-
-class UserLogoutView(LogoutView):
-    pass
-
-
