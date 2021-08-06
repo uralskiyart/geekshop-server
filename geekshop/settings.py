@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
     'products',
     'users',
     'baskets',
@@ -153,5 +154,12 @@ EMAIL_USE_SSL = False
 
 # EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = None, None
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.vk.V'
+)
+
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'tmp/mails/'
+
+455653104482-jieuqncpuat1jtgbclhj38jo2607cnce.apps.googleusercontent.com
