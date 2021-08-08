@@ -3,7 +3,7 @@ import random, hashlib
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django import forms
 
-from users.models import User
+from users.models import User, ExtendUser
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
@@ -56,3 +56,13 @@ class UserProfileForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'image', 'age')
+
+
+class ExtendUserProfileForm(forms.Form):
+    tagline = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    about_me = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    gender = forms.ChoiceField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+
+    class Meta:
+        model = ExtendUser
+        fields = ('tagline', 'about_me', 'gender')

@@ -8,10 +8,10 @@ from django.contrib.auth import login as auth_login
 
 from common.views import CommonContextMixin, CommonSendVerifyMailMixin
 
-from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, ExtendUserProfileForm
 from baskets.models import Basket
 
-from users.models import User
+from users.models import User, ExtendUser
 
 
 class UserLoginView(LoginView):
@@ -57,6 +57,8 @@ class UserProfileView(CommonContextMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(UserProfileView, self).get_context_data(**kwargs)
+        context['extend_form'] = ExtendUser.objects
+        print(context)
         context['baskets'] = Basket.objects.filter(user=self.object)
         return context
 
