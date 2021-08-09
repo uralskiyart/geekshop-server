@@ -50,12 +50,18 @@
                         </div>
                     </div>
                     <div class="form-row mb-2">
-                        <div class="col-lg-12">
+                        <div class="col-lg-6">
                             <div class="custom-file">
                                 {{ form.image }}
                                 <label class="custom-file-label" for="{{ form.image.id_for_label }}">Выберите
                                     изображение</label>
                             </div>
+                            <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="small mb-1" for="{{ form.age.id_for_label }}">Возраст</label>
+                                {{ form.age }}
+                            </div>
+                        </div>
                         </div>
                     </div>
                     <div class="form-row">
@@ -67,6 +73,20 @@
                             <label class="small mb-1" for="{{ form.email.id_for_label }}">Адрес электронной
                                 почты</label>
                             {{ form.email }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-lg-4">
+                            <label class="small mb-1" for="{{ form.tagline.id_for_label }}">Tag</label>
+                            {{ form.tagline }}
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="small mb-1" for="{{ form.about_me.id_for_label }}">О себе</label>
+                            {{ form.about_me }}
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="small mb-1" for="{{ form.gender.id_for_label }}">Пол</label>
+                            {{ form.gender }}
                         </div>
                     </div>
                     <div class="form-row">
