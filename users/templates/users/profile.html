@@ -12,8 +12,8 @@
                 <h4 class="mt-3 mb-3">Профиль</h4>
                 {% if messages or form.errors %}
                     <div class="alert
-                        {% if messages %} alert-success {% else %} alert-warning {% endif %}
-                            alert-dismissible fade show" role="alert" style="margin-top: 50px;">
+                                    {% if messages %} alert-success {% else %} alert-warning {% endif %}
+                                        alert-dismissible fade show" role="alert" style="margin-top: 50px;">
                         {% if messages %}
                             {% for message in messages %}
                                 {{ message }}
@@ -22,7 +22,14 @@
                             {% for error in form.non_field_errors %}
                                 {{ error }}
                             {% endfor %}
+
+                            {{ form.errors|escape }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+
                         {% endif %}
+
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -33,7 +40,7 @@
                          src="{% if user.image %} {{ user.image.url }} {% else %} {% static 'vendor/img/users/default_avatar.jpg' %} {% endif %}"
                          class="img-thumbnail">
                 </div>
-                <form action="{% url 'users:profile' user.id%}" method="post">
+                <form action="{% url 'users:profile' user.id %}" method="post">
                     {% csrf_token %}
                     <div class="form-row">
                         <div class="col-lg-6">
@@ -57,11 +64,11 @@
                                     изображение</label>
                             </div>
                             <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="small mb-1" for="{{ form.age.id_for_label }}">Возраст</label>
-                                {{ form.age }}
+                                <div class="form-group">
+                                    <label class="small mb-1" for="{{ form.age.id_for_label }}">Возраст</label>
+                                    {{ form.age }}
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                     <div class="form-row">
@@ -75,19 +82,21 @@
                             {{ form.email }}
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="col-lg-4">
-                            <label class="small mb-1" for="{{ form.tagline.id_for_label }}">Tag</label>
-                            {{ form.tagline }}
-                        </div>
-                        <div class="col-lg-4">
-                            <label class="small mb-1" for="{{ form.about_me.id_for_label }}">О себе</label>
-                            {{ form.about_me }}
-                        </div>
-                        <div class="col-lg-4">
-                            <label class="small mb-1" for="{{ form.gender.id_for_label }}">Пол</label>
-                            {{ form.gender }}
-                        </div>
+                    <div class="form-row mb-0">
+                          {{ extend_form.as_p }}
+
+                        {#                        <div class="col-lg-4">#}
+                        {#                            <label class="small mb-1" for="{{ extend_form.tagline.id_for_label }}">Tag</label>#}
+                        {#                            {{ extend_form.tagline }}#}
+                        {#                        </div>#}
+                        {#                        <div class="col-lg-4">#}
+                        {#                            <label class="small mb-1" for="{{ extend_form.about_me.id_for_label }}">О себе</label>#}
+                        {#                            {{ extend_form.about_me }}#}
+                        {#                        </div>#}
+                        {#                        <div class="col-lg-2">#}
+                        {#                            <label class="small mb-1" for="{{ extend_form.gender.id_for_label }}">Пол</label>#}
+                        {#                            {{ extend_form.gender }}#}
+                        {#                        </div>#}
                     </div>
                     <div class="form-row">
                         <div class="col-lg-12" style="margin-top: 33px;">

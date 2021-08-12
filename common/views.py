@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 
 from geekshop import settings
+from users.forms import ExtendUserProfileForm, UserProfileForm
 
 
 class CommonContextMixin:
@@ -44,3 +45,22 @@ class CommonSendVerifyMailMixin:
         salt = hashlib.sha1(str(random()).encode('utf8')).hexdigest()[:6]
         user.activation_key = hashlib.sha1((user.email + salt).encode('utf8')).hexdigest()
         user.save()
+
+
+class CommonExtendMProfileMixin:
+    extend_form_class = ExtendUserProfileForm
+
+    extend_form = None
+
+    def get_context_data(self, **kwargs):
+        context = super(CommonExtendMProfileMixin, self).get_context_data(**kwargs)
+        return context
+
+    def post(self, request, *args, **kwargs):
+            extend_form = self.extend_form_class(request.POST, instance=request.user.extenduser)
+            print(extend_form)
+
+            if extend_form.is_valid():
+                return super().post(request, *args, **kwargs)
+            else:
+                return self.get_context_data(extend_form=extend_form)

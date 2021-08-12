@@ -47,8 +47,8 @@ class UserRegistrationForm(UserCreationForm):
 
 class UserProfileForm(UserChangeForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}))
-    email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'form-control py-4', 'readonly': True}))
-    age = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control py-4', 'readonly': True}))
+    email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'form-control py-4'}))
+    age = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control py-4'}), required=False)
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}), required=False)
@@ -57,12 +57,34 @@ class UserProfileForm(UserChangeForm):
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'image', 'age')
 
+    # def __init__(self, *args, **kwargs):
+    #     super(UserChangeForm, self).__init__(*args, **kwargs)
+    #     for field_name, field in self.fields.items():
+    #         field.widget.attrs['class'] = 'form-control'
+    #         field.help_text = ''
+    #         if field_name == 'password':
+    #             field.widget = forms.HiddenInput()
 
-class ExtendUserProfileForm(forms.Form):
-    tagline = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
-    about_me = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
-    gender = forms.ChoiceField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    # def clean_age(self):
+    #     data = self.cleaned_data['age']
+    #     if data < 18:
+    #         raise forms.ValidationError("Вы слишком молоды!")
+    #
+    #     return data
+
+class ExtendUserProfileForm(forms.ModelForm):
+    # tagline = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    # about_me = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    # gender = forms.ChoiceField(choices=ExtendUser.GENDER_CHOICES, widget=forms.RadioSelect())
 
     class Meta:
         model = ExtendUser
         fields = ('tagline', 'about_me', 'gender')
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            for field_name, field in self.fields.items():
+                field.widgets.attrs['class'] = 'form-control py-4'
+                field.help_texts = ''
+                if field_name == 'about_me':
+                    field.widget = forms.TextInput()
