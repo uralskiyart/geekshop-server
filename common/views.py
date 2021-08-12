@@ -49,18 +49,17 @@ class CommonSendVerifyMailMixin:
 
 class CommonExtendMProfileMixin:
     extend_form_class = ExtendUserProfileForm
-
     extend_form = None
 
     def get_context_data(self, **kwargs):
         context = super(CommonExtendMProfileMixin, self).get_context_data(**kwargs)
+        context['extend_form'] = self.extend_form_class(self.request.GET or None, instance=self.request.user.extenduser)
         return context
 
     def post(self, request, *args, **kwargs):
+            form = self.form_class(request.POST, request.FILES, instance=request.user)
             extend_form = self.extend_form_class(request.POST, instance=request.user.extenduser)
-            print(extend_form)
-
-            if extend_form.is_valid():
-                return super().post(request, *args, **kwargs)
+            if form.is_valid() and extend_form.is_valid():
+                return self.form_valid(form)
             else:
-                return self.get_context_data(extend_form=extend_form)
+                return self.get_context_data(form=form, extend_form=extend_form)

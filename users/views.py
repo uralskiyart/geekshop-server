@@ -46,7 +46,7 @@ class UserVerifyView(LoginView):
         return HttpResponseRedirect(reverse('users:login'))
 
 
-class UserProfileView(CommonContextMixin, CommonExtendMProfileMixin, SuccessMessageMixin, UpdateView):
+class UserProfileView(CommonExtendMProfileMixin, CommonContextMixin, SuccessMessageMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'users/profile.html'
