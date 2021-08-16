@@ -5,8 +5,9 @@ from django.contrib import messages
 from django.urls import reverse
 from django.core.mail import send_mail
 
+from baskets.models import Basket
 from geekshop import settings
-from users.forms import ExtendUserProfileForm, UserProfileForm
+from users.forms import ExtendUserProfileForm
 
 
 class CommonContextMixin:
