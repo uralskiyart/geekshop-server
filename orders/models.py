@@ -21,6 +21,7 @@ class Order(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(choices=STATUSES, default=FORMING, max_length=3)
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -33,14 +34,22 @@ class Order(models.Model):
         return f'Заказ номер {self.pk}'
 
     def get_total_quantity(self):
-        items = self.ordertitems.select_related()
+        items = self.orderitems.select_related()
         return sum(list(map(lambda x: x.quantity, items)))
 
     def get_total_cost(self):
         items = self.orderitems.select_related()
         return sum(list(map(lambda x: x.get_product_cost, items)))
 
+    def delete(self):
+        self.is_active = False
+        self.save()
+
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='orderitems')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
+
+    @property
+    def get_product_cost(self):
+        return self.quantity * self.product.price
